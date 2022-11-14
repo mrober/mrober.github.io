@@ -1,0 +1,8 @@
+textarea#code {
+  box-sizing: border-box;
+  max-width: 100%;
+  width: 600px;
+  height: 200px;
+  resize: none;
+  font-family: "Courier New", Courier, monospace;
+}

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Circles!</title>
+</head>
+<body style="margin: 0; overflow: hidden;">
+<canvas id="canvas" width="800" height="500" style="background: black;"></canvas>
+
+<script>
+  const r = 20;
+
+  const canvas = document.getElementById("canvas");
+  const context = canvas.getContext("2d");
+
+  const colours = ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"];
+
+  let circles = [];
+
+  function Circle(x, y, dx, dy, colour) {
+    this.x = x;
+    this.y = y;
+
+    this.dx = dx;
+    this.dy = dy;
+
+    this.colour = colour;
+  }
+
+  function onResize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  window.addEventListener("load", onResize);
+  window.addEventListener("resize", onResize);
+
+  function generateRandomCircles(n) {
+    onResize();
+    for (let i = 0; i < n; ++i) {
+      circles.push(new Circle(
+          r + Math.floor(Math.random() * (canvas.width - r)),
+          r + Math.floor(Math.random() * (canvas.height - r)),
+          Math.random() * 4 - 2,
+          Math.random() * 4 - 2,
+          Math.floor(Math.random() * colours.length)
+      ));
+    }
+  }
+
+  function parseCirclesFromParams() {
+    const params = window.location.search.substring(1).split(";");
+    for (let i = 0; i < params.length; ++i) {
+      const param = params[i].split(",");
+      if (param.length === 5) {
+        circles.push(new Circle(
+            parseInt(param[0]),
+            parseInt(param[1]),
+            parseFloat(param[2]),
+            parseFloat(param[3]),
+            parseInt(param[4])
+        ));
+      }
+    }
+  }
+
+  parseCirclesFromParams();
+  if (circles.length === 0) {
+    generateRandomCircles(25);
+  }
+
+  function drawCircle(circle) {
+    context.strokeStyle = colours[circle.colour];
+    context.beginPath();
+    context.arc(circle.x, circle.y, r, 0, 2 * Math.PI);
+    context.stroke();
+  }
+
+  function renderFrame() {
+    context.fillStyle = "rgba(0, 0, 0, 0.1)";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    let i;
+    for (i = 0; i < circles.length; ++i) {
+      const circle = circles[i];
+      circle.x += circle.dx;
+      circle.y += circle.dy;
+    }
+
+    for (i = 0; i < circles.length; ++i) {
+      calcBounds(circles[i]);
+      for (let j = i + 1; j < circles.length; ++j) {
+        calcCollision(circles[i], circles[j]);
+      }
+
+      drawCircle(circles[i]);
+    }
+
+    window.requestAnimationFrame(renderFrame);
+  }
+
+  function calcBounds(circle) {
+    if (circle.x < r) {
+      circle.x = r;
+      circle.dx = Math.abs(circle.dx);
+    }
+    if (circle.y < r) {
+      circle.y = r;
+      circle.dy = Math.abs(circle.dy);
+    }
+    if (circle.x >= canvas.width - r) {
+      circle.x = canvas.width - r;
+      circle.dx = -Math.abs(circle.dx);
+    }
+    if (circle.y >= canvas.height - r) {
+      circle.y = canvas.height - r;
+      circle.dy = -Math.abs(circle.dy);
+    }
+    circle.x += circle.dx;
+    circle.y += circle.dy;
+  }
+
+  function calcCollision(i, j) {
+    const y = (j.y - i.y);
+    const x = (j.x - i.x);
+
+    const d2 = x * x + y * y;
+
+    if (d2 > 3 * r * r && d2 < 4 * r * r) {
+      const kji = (x * i.dx + y * i.dy) / d2;
+      const kii = (x * i.dy - y * i.dx) / d2;
+      const kij = (x * j.dx + y * j.dy) / d2;
+      const kjj = (x * j.dy - y * j.dx) / d2;
+
+      i.dy = kij * y + kii * x;
+      i.dx = kij * x - kii * y;
+
+      j.dy = kji * y + kjj * x;
+      j.dx = kji * x - kjj * y;
+    }
+  }
+
+  window.requestAnimationFrame(renderFrame);
+</script>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Obfuscation Tool</title>
+  <link rel="stylesheet" href="../theme.css">
+  <link rel="stylesheet" href="email.css">
+  <script>
+    function obfuscate() {
+      let charString = 'Email obfuscation created using tool @ https://mrober.github.io _0123456789jkqvxy';
+      const email = document.getElementById('email');
+      if (!email.checkValidity() || email.value.length === 0) {
+        if (document.getElementById('emailForm').reportValidity()) {
+          alert("Please enter a valid e-mail address.");
+          email.focus();
+        }
+        return;
+      }
+      let encodedEmail = '';
+      for (let i = 0; i < email.value.length; i++) {
+        const c = email.value.charAt(i);
+        let pos = charString.indexOf(c);
+        if (pos === -1) {
+          pos = charString.length;
+          charString += c;
+        }
+        if (i > 0) {
+          encodedEmail += '+';
+        }
+        encodedEmail += 'c.charAt(' + pos + ')';
+      }
+      const encodedMailto = 'c.charAt(1)+c.charAt(2)+c.charAt(3)+c.charAt(4)+c.charAt(13)+c.charAt(6)+c.charAt(44)';
+      let generatedCode = '\074script>';
+      generatedCode += 'let c=\'' + charString + '\';let e=' + encodedEmail + ';';
+      generatedCode += 'document.write(\'\074a href="\'+' + encodedMailto
+          + '+e+\'">\'+e+\'\074/a>\')';
+      generatedCode += '\074/script>';
+      generatedCode += '<noscript><em>JavaScript required to view e-mail address.</em></noscript>';
+      document.getElementById('code').value = generatedCode;
+    }
+  </script>
+</head>
+<body>
+<p>Enter email address below to obfuscate it.</p>
+<form id="emailForm">
+  <p><label for="email">Email address:<br></label><input id="email" type="email" required></p>
+</form>
+<p>
+  <button onclick="obfuscate()">Obfuscate</button>
+</p>
+<p>
+  <label for="code">Generated Code:<br></label>
+  <textarea id="code" readonly></textarea>
+</p>
+<p>Obfuscation happens locally in your browser. Your e-mail address is not transmitted anywhere.</p>
+<p>
+  Thanks to <em>This a friend of mine,
+  <a href="https://paulsaulnier.com" target="_blank">Paul</a></em>, for the original idea and
+  permission to use it here.
+</p>
+</body>
+</html>
