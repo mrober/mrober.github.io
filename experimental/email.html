@@ -8,11 +8,11 @@
   <link rel="stylesheet" href="email.css">
   <script>
     function obfuscate() {
-      let charString = 'Email obfuscation created using tool @ https://mrober.github.io _0123456789jkqvxy';
+      let charString = 'Email obfuscation created using tool @ https://mrober.io _0123456789jkqvxy';
       const email = document.getElementById('email');
       if (!email.checkValidity() || email.value.length === 0) {
         if (document.getElementById('emailForm').reportValidity()) {
-          alert("Please enter a valid e-mail address.");
+          alert("Please enter a valid email address.");
           email.focus();
         }
         return;
@@ -36,13 +36,13 @@
       generatedCode += 'document.write(\'\074a href="\'+' + encodedMailto
           + '+e+\'">\'+e+\'\074/a>\')';
       generatedCode += '\074/script>';
-      generatedCode += '<noscript><em>JavaScript required to view e-mail address.</em></noscript>';
+      generatedCode += '<noscript><em>JavaScript required to view email address.</em></noscript>';
       document.getElementById('code').value = generatedCode;
     }
   </script>
 </head>
 <body>
-<p>Enter email address below to obfuscate it.</p>
+<h1>Email Obfuscation Tool</h1>
 <form id="emailForm">
   <p><label for="email">Email address:<br></label><input id="email" type="email" required></p>
 </form>
@@ -53,7 +53,7 @@
   <label for="code">Generated Code:<br></label>
   <textarea id="code" readonly></textarea>
 </p>
-<p>Obfuscation happens locally in your browser. Your e-mail address is not transmitted anywhere.</p>
+<p>Obfuscation happens locally in your browser. Your email address is not transmitted anywhere.</p>
 <p>
   Thanks to <em>This a friend of mine,
   <a href="https://paulsaulnier.com" target="_blank">Paul</a></em>, for the original idea and
